@@ -1,0 +1,69 @@
+Option Explicit
+Public Sub test1111()
+'
+  Dim rng As Range
+  Dim lookFor As Range
+  Dim table_array As Range
+  Dim table_array_col As Integer
+  Dim howMany As Long
+  Dim i As Long
+  Dim start As Range
+  Dim lastVal As Range
+  
+  Dim progID As String
+  Dim topic1 As String
+  Dim stockcode As String
+  
+  Dim bizday As Range
+  Dim sDate As Range
+  Dim tDate As Range
+  Dim lastCell As Range
+  Dim num As Integer
+
+  
+  Set rng = Range("A2:A" & Cells(Rows.Count, 1).End(xlUp).Row)
+  Set lookFor = Range([A2], Cells(Rows.Count, "A").End(xlUp))
+  Set table_array = Worksheets("KR코드").Range("A5:C2273")
+  table_array_col = 3
+  rng.Offset(, 3) = Application.VLookup(lookFor.Value, table_array, table_array_col, 0)
+  
+  howMany = WorksheetFunction.CountA(Range("A2:A10"))
+  Cells(2, "I") = howMany
+
+  For i = 0 To howMany
+    Worksheets("test").Cells(1, 2 + 11 * i) = Cells(2 + i, "C")
+    Next i
+  
+  'Set lastCell = Cells(Rows.Count, "D").End(xlUp)
+  'Cells(5, 5) = lastCell.Value
+  
+  
+  'If Cells(8, 8).Value = 20170620 Then
+  '   Cells(10, 8) = "True"
+  'End If
+  
+  Set bizday = Cells(8, "G")
+  Set sDate = Cells(8, "H")
+
+  Set lastCell = Cells(Rows.Count, "H").End(xlUp)
+  num = 1
+ 
+  progID = "mpmaster.rtds"
+  stockcode = "000040"
+  topic1 = stockcode + ".KR!TradingDate?"
+
+  bizday.Value = 0
+  sDate.Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1 & Chr(34) & "&" & bizday.Value & ")"
+  
+  Do Until lastCell.Value = 20170501
+      
+    Set bizday = Cells(8 + num, "G")
+    bizday.Value = num
+    Set tDate = Cells(8 + num, "H")
+    tDate.Formula = sDate.Formula
+    'Set lastCell = Cells(Rows.Count, "H").End(xlUp)
+    num = num + 1
+    
+  Loop
+    
+End Sub
