@@ -7,17 +7,14 @@ Public Sub test1111()
   Dim table_array_col As Integer
   Dim howMany As Long
   Dim i As Long
-  Dim start As Range
-  Dim lastVal As Range
   
   Dim progID As String
   Dim topic1 As String
   Dim stockcode As String
   
-  Dim bizday As Range
-  Dim sDate As Range
+  'Dim bizday As Range
+  Dim request As Range
   Dim tDate As Range
-  Dim lastCell As Range
   Dim num As Integer
 
   
@@ -34,36 +31,23 @@ Public Sub test1111()
     Worksheets("test").Cells(1, 2 + 11 * i) = Cells(2 + i, "C")
     Next i
   
-  'Set lastCell = Cells(Rows.Count, "D").End(xlUp)
-  'Cells(5, 5) = lastCell.Value
-  
-  
-  'If Cells(8, 8).Value = 20170620 Then
-  '   Cells(10, 8) = "True"
-  'End If
-  
-  Set bizday = Cells(8, "G")
-  Set sDate = Cells(8, "H")
+  num = 0
+  'Set bizday = Cells(8, "G")
+  Set request = Cells(2, "G")
+  Set tDate = Cells(8 + num, "H")
+  'Set lastCell = Cells(Rows.Count, "H").End(xlUp)
 
-  Set lastCell = Cells(Rows.Count, "H").End(xlUp)
-  num = 1
- 
   progID = "mpmaster.rtds"
-  stockcode = "000040"
+  stockcode = "005930"
   topic1 = stockcode + ".KR!TradingDate?"
 
-  bizday.Value = 0
-  sDate.Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1 & Chr(34) & "&" & bizday.Value & ")"
-  
-  Do Until lastCell.Value = 20170501
-      
-    Set bizday = Cells(8 + num, "G")
-    bizday.Value = num
+  Do
+    'Set bizday = Cells(8 + num, "G")
+    'bizday.Value = num
     Set tDate = Cells(8 + num, "H")
-    tDate.Formula = sDate.Formula
-    'Set lastCell = Cells(Rows.Count, "H").End(xlUp)
+    tDate.Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1 & Chr(34) & "&" & num & ")" '
     num = num + 1
-    
-  Loop
+  Loop While num < request.Value
+  
     
 End Sub
