@@ -5,49 +5,59 @@ Public Sub test1111()
   Dim lookFor As Range
   Dim table_array As Range
   Dim table_array_col As Integer
-  Dim howMany As Long
-  Dim i As Long
-  
+    
   Dim progID As String
-  Dim topic1 As String
-  Dim stockcode As String
+  Dim topic1 As Variant
+  Dim columns As Variant
+ 
+  Dim nDate As Range
+  Dim nStock As Long
+  Dim code(0 To 49) As String
+  Dim tVal(10) As Variant
   
-  'Dim bizday As Range
-  Dim request As Range
-  Dim tDate As Range
-  Dim num As Integer
-
+  Dim i As Integer
+  Dim j As Integer
+  Dim k As Integer
+  Dim sRow As Integer, sCol As Integer
   
+  '주식데이터를 넣을 셀위치
+  sRow = 3
+  sCol = 1
+  
+  Set nDate = Cells(2, "G")
   Set rng = Range("A2:A" & Cells(Rows.Count, 1).End(xlUp).Row)
   Set lookFor = Range([A2], Cells(Rows.Count, "A").End(xlUp))
   Set table_array = Worksheets("KR코드").Range("A5:C2273")
   table_array_col = 3
-  rng.Offset(, 3) = Application.VLookup(lookFor.Value, table_array, table_array_col, 0)
+  rng.Offset(, 2) = Application.VLookup(lookFor.Value, table_array, table_array_col, 0)
   
-  howMany = WorksheetFunction.CountA(Range("A2:A10"))
-  Cells(2, "I") = howMany
-
-  For i = 0 To howMany
-    Worksheets("test").Cells(1, 2 + 11 * i) = Cells(2 + i, "C")
+  nStock = WorksheetFunction.CountA(Range("A2:A50"))
+  Cells(2, "I") = nStock
+  
+  For i = 0 To nStock
+    code(i) = Cells(2 + i, "C").Value
+    Worksheets("일자별주가").Cells(sRow - 2, sCol + 11 * i) = Cells(2 + i, "A")
+    Worksheets("일자별주가").Cells(sRow - 2, sCol + 11 * i + 1) = Cells(2 + i, "C")
+    'Worksheets("일자별주가").Cells(1, 1 + 11 * i) = Cells(2 + i, "C")
     Next i
-  
-  num = 0
-  'Set bizday = Cells(8, "G")
-  Set request = Cells(2, "G")
-  Set tDate = Cells(8 + num, "H")
-  'Set lastCell = Cells(Rows.Count, "H").End(xlUp)
+
 
   progID = "mpmaster.rtds"
-  stockcode = "005930"
-  topic1 = stockcode + ".KR!TradingDate?"
+  columns = Array(".KR!TradingDate?", ".KR!OpenPrice?", ".KR!HighPrice?", ".KR!LowPrice?", ".KR!ClosePrice?", ".KR!ChangePrice?", ".KR!ChangeRate?", ".KR!TotalVolume?", ".KR!TotalAmount?", ".KR!ListedStocks?")
+ 
+  For k = 0 To nStock - 1
+    topic1 = Array(code(k) + columns(0), code(k) + columns(1), code(k) + columns(2), code(k) + columns(3), code(k) + columns(4), code(k) + columns(5), code(k) + columns(6), code(k) + columns(7), code(k) + columns(8), code(k) + columns(9))
+    For i = 0 To nDate.Value
+      For j = 0 To 9
+          'Set tVal(j) = Cells(sRow + 5 + i, sCol + 5 + j + (k * 11))
+          'tVal(j).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
+          Worksheets("일자별주가").Cells(sRow + i, sCol + j + (k * 11)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
+          Next j
+      Next i
+    Next k
 
-  Do
-    'Set bizday = Cells(8 + num, "G")
-    'bizday.Value = num
-    Set tDate = Cells(8 + num, "H")
-    tDate.Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1 & Chr(34) & "&" & num & ")" '
-    num = num + 1
-  Loop While num < request.Value
   
     
 End Sub
+
+
