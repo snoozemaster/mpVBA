@@ -1,57 +1,44 @@
 Option Explicit
 Public Sub test1111()
 '
-  Dim rng As Range
-  Dim lookFor As Range
-  Dim table_array As Range
-  Dim table_array_col As Integer
-    
   Dim progID As String
   Dim topic1 As Variant
   Dim columns As Variant
+  Dim codeCell As Range
  
   Dim nDate As Range
   Dim nStock As Long
   Dim code(0 To 49) As String
-  Dim tVal(10) As Variant
   
   Dim i As Integer
   Dim j As Integer
   Dim k As Integer
   Dim sRow As Integer, sCol As Integer
   
-  '주식데이터를 넣을 셀위치
+  '주식데이터를 넣을 셀위치(sRow는 반드시 3이상)
   sRow = 3
   sCol = 1
   
   Set nDate = Cells(2, "G")
-  Set rng = Range("A2:A" & Cells(Rows.Count, 1).End(xlUp).Row)
-  Set lookFor = Range([A2], Cells(Rows.Count, "A").End(xlUp))
-  Set table_array = Worksheets("KR코드").Range("A5:C2273")
-  table_array_col = 3
-  rng.Offset(, 2) = Application.VLookup(lookFor.Value, table_array, table_array_col, 0)
-  
   nStock = WorksheetFunction.CountA(Range("A2:A50"))
-  Cells(2, "I") = nStock
+  Cells(2, "H") = nStock
   
-  For i = 0 To nStock
-    code(i) = Cells(2 + i, "C").Value
-    Worksheets("일자별주가").Cells(sRow - 2, sCol + 11 * i) = Cells(2 + i, "A")
-    Worksheets("일자별주가").Cells(sRow - 2, sCol + 11 * i + 1) = Cells(2 + i, "C")
-    'Worksheets("일자별주가").Cells(1, 1 + 11 * i) = Cells(2 + i, "C")
+  For i = 0 To nStock - 1
+    code(i) = Cells(2 + i, "A").Value
     Next i
-
 
   progID = "mpmaster.rtds"
   columns = Array(".KR!TradingDate?", ".KR!OpenPrice?", ".KR!HighPrice?", ".KR!LowPrice?", ".KR!ClosePrice?", ".KR!ChangePrice?", ".KR!ChangeRate?", ".KR!TotalVolume?", ".KR!TotalAmount?", ".KR!ListedStocks?")
  
-  For k = 0 To nStock - 1
+  For k = 0 To nStock - 1         '종목별저장
+    Set codeCell = Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k)
+    Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k) = Cells(2 + k, "A")
+    Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k + 1).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & codeCell.Value & ".KR!LocalName" & Chr(34) & ")"
     topic1 = Array(code(k) + columns(0), code(k) + columns(1), code(k) + columns(2), code(k) + columns(3), code(k) + columns(4), code(k) + columns(5), code(k) + columns(6), code(k) + columns(7), code(k) + columns(8), code(k) + columns(9))
-    For i = 0 To nDate.Value
-      For j = 0 To 9
-          'Set tVal(j) = Cells(sRow + 5 + i, sCol + 5 + j + (k * 11))
-          'tVal(j).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
-          Worksheets("일자별주가").Cells(sRow + i, sCol + j + (k * 11)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
+    For i = 0 To nDate.Value - 1  '날짜별저장
+      For j = 0 To 9              '컬럼별저장
+          'Cells(sRow + 5 + i, sCol + 5 + j + (k * 10)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
+          Worksheets("일자별주가").Cells(sRow + i, sCol + j + (k * 10)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
           Next j
       Next i
     Next k
