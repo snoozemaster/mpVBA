@@ -32,12 +32,14 @@ Public Sub test1111()
  
   For k = 0 To nStock - 1         '종목별저장
     Set codeCell = Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k)
+    Cells(sRow + 4, sCol + 5 + (k * 10)) = Cells(2 + k, "A")
+    Cells(sRow + 4, sCol + 5 + (k * 10) + 1).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & code(k) & ".KR!LocalName" & Chr(34) & ")"
     Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k) = Cells(2 + k, "A")
     Worksheets("일자별주가").Cells(sRow - 2, sCol + 10 * k + 1).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & codeCell.Value & ".KR!LocalName" & Chr(34) & ")"
     topic1 = Array(code(k) + columns(0), code(k) + columns(1), code(k) + columns(2), code(k) + columns(3), code(k) + columns(4), code(k) + columns(5), code(k) + columns(6), code(k) + columns(7), code(k) + columns(8), code(k) + columns(9))
     For i = 0 To nDate.Value - 1  '날짜별저장
       For j = 0 To 9              '컬럼별저장
-          'Cells(sRow + 5 + i, sCol + 5 + j + (k * 10)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
+          Cells(sRow + 5 + i, sCol + 5 + j + (k * 10)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
           Worksheets("일자별주가").Cells(sRow + i, sCol + j + (k * 10)).Formula = "=RTD(""mpmaster.rtds"",," & Chr(34) & topic1(j) & Chr(34) & "&" & i & ")"
           Next j
       Next i
